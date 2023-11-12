@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_String.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils_traits.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils_String.cpp" />
