@@ -30,3 +30,69 @@ std::vector<std::string_view> util::string::split(std::string_view v, const std:
 	} while (pos != std::string_view::npos);
 	return res;
 }
+
+std::string util::string::v2str(std::string_view v) {
+	return std::string(v.data(), v.size());
+}
+
+util::string::Splitter::SplitIterator::SplitIterator(pointer ptr, const std::string& delim, size_t _pos)
+	: sv{ ptr }, delim{ delim }, prevPos{ pos }, pos{ _pos }, count{ 0 }
+{
+	++(*this);
+}
+
+util::string::Splitter::SplitIterator::reference util::string::Splitter::SplitIterator::operator*() const {
+	if (prevPos == sv.npos) {
+		return sv.substr(0, 0);
+	}
+	return sv.substr(prevPos, pos - prevPos);
+}
+
+util::string::Splitter::SplitIterator::pointer util::string::Splitter::SplitIterator::operator->() {
+	if (prevPos == sv.npos) {
+		return sv.substr(0, 0);
+	}
+	return sv.substr(prevPos, pos - prevPos);
+}
+
+// Prefix increment
+util::string::Splitter::SplitIterator util::string::Splitter::SplitIterator::operator++() {
+	if (pos == sv.npos) {
+		prevPos = pos;
+		return *this;
+	}
+	prevPos = pos;
+	if (count) {
+		prevPos += delim.size();
+	}
+	pos = sv.find(delim, prevPos);
+	++count;
+	return *this;
+}
+
+// Postfix increment
+util::string::Splitter::SplitIterator util::string::Splitter::SplitIterator::operator++(int) {
+	SplitIterator tmp = *this;
+	++(*this);
+	return tmp;
+}
+
+util::string::Splitter::Splitter(std::string_view _sv, const std::string& _delim)
+	: sv{ _sv }, delim{ _delim }
+{
+
+}
+
+util::string::Splitter::Splitter(std::string_view _sv, std::string&& _delim)
+	: sv{ _sv }, delim{ std::move(_delim) }
+{
+
+}
+
+util::string::Splitter::SplitIterator util::string::Splitter::begin() {
+	return SplitIterator(sv, delim, 0);
+}
+
+util::string::Splitter::SplitIterator util::string::Splitter::end() {
+	return SplitIterator(sv, delim, sv.npos);
+}
