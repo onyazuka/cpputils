@@ -14,10 +14,17 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Mt\SafeQueue.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Mt\ThreadPool.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_String.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_Traits.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Mt\ThreadPool.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils_String.cpp" />
   </ItemGroup>
 </Project>
