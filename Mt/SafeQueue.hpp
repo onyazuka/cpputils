@@ -8,10 +8,17 @@ namespace util::mt {
 	class SafeQueue {
 	public:
 		SafeQueue() = default;
-		SafeQueue(const SafeQueue&) = delete;
-		SafeQueue& operator=(const SafeQueue&) = delete;
-		SafeQueue(SafeQueue&&) = delete;
-		SafeQueue& operator=(SafeQueue&&) = delete;
+		SafeQueue(const SafeQueue& other) = delete;
+		SafeQueue& operator=(const SafeQueue& other) = delete;
+		SafeQueue(SafeQueue&& other) noexcept {
+			std::lock_guard<std::mutex> lck2(other.mtx);
+			que = std::move(other.que);
+		}
+		SafeQueue& operator=(SafeQueue&& other) noexcept {
+			std::lock_guard<std::mutex> lck2(other.mtx);
+			que = std::move(other.que);
+			return *this;
+		}
 		void push(T t) {
 			std::lock_guard<std::mutex> lck{ mtx };
 			que.push(std::move(t));

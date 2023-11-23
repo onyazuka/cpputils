@@ -7,7 +7,7 @@ ThreadPool::ThreadPool(size_t n) {
 	for (size_t i = 0; i < n; ++i) {
 		threads.push_back(std::jthread([this](std::stop_token stop) {
 			while (!stop.stop_requested()) {
-				PTastArgsPair task;
+				PTaskArgsPair task;
 				if (tasksQueue.popWaitFor(task, std::chrono::milliseconds(1000))) {
 					task.first(task.second);
 				}
@@ -23,3 +23,4 @@ ThreadPool::~ThreadPool() {
 		if (threads[i].joinable()) threads[i].join();
 	}
 }
+

@@ -1,6 +1,9 @@
 #include "TestThreadPool.hpp"
 #include <iostream>
+#include <span>
+#include <shared_mutex>
 
+using namespace util::mt;
 using namespace util::mt::tests;
 using namespace std;
 
@@ -43,4 +46,131 @@ void util::mt::tests::testThreadPool() {
 	cout << val3 << endl;
 	fut4.wait();
 	//auto fut = tp.pushTask([](std::any))
+}
+
+class Observer {
+public:
+	virtual void removeFd(int fd) = 0;
+};
+
+class Observable {
+public:
+	void setObserver(Observer* obs) {
+		observer = obs;
+	}
+	void notifyRemoveFd(int fd) {
+		assert(observer);
+		observer->removeFd(fd);
+	}
+private:
+	Observer* observer;
+};
+
+
+class SocketDataHandler : public Observable {
+public:
+	using TaskT = std::pair<std::packaged_task<std::any(std::any&)>, std::any>;
+	using QueueT = SafeQueue<TaskT>;
+	SocketDataHandler(QueueT&& tasksQueue)
+		: tasksQueue{ std::move(tasksQueue) }
+	{
+		run();
+	}
+	SocketDataHandler(const SocketDataHandler&) = delete;
+	SocketDataHandler& operator=(const SocketDataHandler&) = delete;
+	SocketDataHandler(SocketDataHandler&& other) noexcept {
+		std::lock_guard<std::mutex> lck(other.mtx);
+		tasksQueue = std::move(other.tasksQueue);
+		thread = std::move(other.thread);
+		sockets = std::move(other.sockets);
+	}
+	SocketDataHandler& operator=(SocketDataHandler&& other) noexcept {
+		std::lock_guard<std::mutex> lck(other.mtx);
+		tasksQueue = std::move(other.tasksQueue);
+		thread = std::move(other.thread);
+		sockets = std::move(other.sockets);
+		return *this;
+	}
+	~SocketDataHandler() {
+		request_stop();
+		join();
+	}
+	void request_stop() {
+		thread.request_stop();
+	}
+	void join() {
+		if (thread.joinable()) {
+			thread.join();
+		}
+	}
+	QueueT& queue() {
+		return tasksQueue;
+	}
+	/*SocketDataHandler& setEpollFd(int _epollFd) {
+		std::lock_guard<std::mutex> lck(mtx);
+		epollFd = _epollFd;
+		return *this;
+	}*/
+
+	void onRead(int epollFd, int socketFd) {
+		cout << format("Reading from epoll {} and socket {}\n", epollFd, socketFd);
+	}
+	void onClose(int epollFd, int socketFd) {
+		cout << "Closing...\n";
+		notifyRemoveFd(socketFd);
+	}
+
+private:
+	void run() {
+		thread = std::move(std::jthread([this](std::stop_token stop) {
+			while (!stop.stop_requested()) {
+				TaskT task;
+				if (tasksQueue.popWaitFor(task, std::chrono::milliseconds(1000))) {
+					task.first(task.second);
+				}
+			}
+			}));
+	}
+	QueueT tasksQueue;
+	std::jthread thread;
+	std::vector<std::pair<int, std::vector<char>>> sockets;
+	//int epollFd;
+	std::mutex mtx;
+};
+
+class SocketThreadMapper : public Observer {
+public:
+	std::optional<size_t> findThreadId(int fd) {
+		std::shared_lock<std::shared_mutex> lck(mtx);
+		if (auto iter = map.find(fd); iter == map.end()) {
+			return std::nullopt;
+		}
+		else {
+			return iter->second;
+		}
+	}
+	void addThreadId(int fd, size_t threadIdx) {
+		std::unique_lock<std::shared_mutex> lck(mtx);
+		map[fd] = threadIdx;
+	}
+	void removeFd(int fd) override {
+		std::unique_lock<std::shared_mutex> lck(mtx);
+		map.erase(fd);
+	}
+private:
+	std::shared_mutex mtx;
+	std::unordered_map<int, size_t> map;
+};
+
+void util::mt::tests::testRollingThreadPool() {
+	SocketThreadMapper mapper;
+	RollingThreadPool<SocketDataHandler> rtp;
+	for (size_t i = 0; i < rtp.size(); ++i) {
+		rtp.getThreadObj(i).setObserver(&mapper);
+	}
+	int epollFd = 0;
+	int sockFd = 1;
+	auto id = rtp.getId();
+	auto& obj = rtp.getThreadObj(id);
+	rtp.pushTask(rtp.getId(), std::function([&obj](int epollFd, int socketFd) { obj.onRead(epollFd, socketFd); return 0; }), std::move(epollFd), std::move(sockFd));
 }

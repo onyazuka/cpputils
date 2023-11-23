@@ -4,5 +4,6 @@
 namespace util::mt::tests {
 
 	void testThreadPool();
+	void testRollingThreadPool();
 
 }
