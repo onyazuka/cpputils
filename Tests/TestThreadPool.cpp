@@ -1,7 +1,10 @@
 #include "TestThreadPool.hpp"
 #include <iostream>
 #include <span>
+#include <cmath>
 #include <shared_mutex>
+#include <functional>
+#include <format>
 
 using namespace util::mt;
 using namespace util::mt::tests;

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <type_traits>
 #include <mutex>
+#include <memory>
 
 namespace util {
 

@@ -3,6 +3,7 @@
 #include <format>
 #include <iostream>
 #include <syncstream>
+#include <thread>
 
 using namespace util::mt;
 using namespace std;
