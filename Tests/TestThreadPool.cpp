@@ -5,6 +5,7 @@
 #include <shared_mutex>
 #include <functional>
 #include <format>
+#include <optional>
 
 using namespace util::mt;
 using namespace util::mt::tests;

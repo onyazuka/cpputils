@@ -20,8 +20,10 @@ namespace util {
 		};
 
 		struct Options {
-			Options(bool logTime, bool logLocation, bool logFunctionName, const std::string& timeFmt = "");
+			Options(bool logTime, bool logThreadId, bool logThreadName, bool logLocation, bool logFunctionName, const std::string& timeFmt = "");
 			bool logTime = false;
+			bool logThreadId = false;
+			bool logThreadName = false;
 			bool logLocation = false;
 			bool logFunctionName = false;
 			// time fmt example: "{:%d.%m.%Y %H:%M:%S}", also there is no validation here

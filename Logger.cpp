@@ -23,8 +23,8 @@ void ILogger::debug(std::string_view sv, std::source_location ssrc) {
 	log(LogLevel::debug, sv, ssrc);
 }
 
-Logger::Options::Options(bool logTime, bool logLocation, bool logFunctionName, const std::string& _timeFmt)
-	: logTime{ logTime }, logLocation{ logLocation }, logFunctionName{ logFunctionName }, timeFmt{ _timeFmt }
+Logger::Options::Options(bool logTime, bool logThreadId, bool logThreadName, bool logLocation, bool logFunctionName, const std::string& _timeFmt)
+	: logTime{ logTime }, logThreadId{ logThreadId }, logThreadName{ logThreadName }, logLocation{ logLocation }, logFunctionName{ logFunctionName }, timeFmt { _timeFmt }
 {
 	if (logTime && timeFmt.empty()) {
 		timeFmt = "{:%d.%m.%Y %H:%M:%S}";
@@ -56,6 +56,23 @@ void Logger::_logImpl(std::ostream& os, LogLevel curLvl, std::string_view sv, st
 	if (opts.logTime) {
 		std::string fmt = std::format("[{}]", opts.timeFmt);
 		os << std::vformat(fmt, std::make_format_args(std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::utc_clock::now())));
+	}
+	if (opts.logThreadId) {
+		os << "[" << std::this_thread::get_id() << "]";
+	}
+	if (opts.logThreadName) {
+#ifdef _WIN32 
+		os << "[WINDOWS_THREAD_NAMES_NOT_SUPPORTED]";
+#else
+		// assuming linux
+		static char ThreadNameBuf[16];
+		if (pthread_getname_np(std::this_thread::get_id(), ThreadNameBuf, 16) == 0) {
+			os << std::format("[{}]", ThreadNameBuf);
+		}
+		else {
+			os << "[LINUX_COULDNT_GET_THREAD_NAME]";
+		}
+#endif
 	}
 	if (opts.logLocation) {
 		os << std::format("[{}:{}]", ssrc.file_name(), ssrc.line());
