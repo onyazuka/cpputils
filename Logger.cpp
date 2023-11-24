@@ -66,7 +66,7 @@ void Logger::_logImpl(std::ostream& os, LogLevel curLvl, std::string_view sv, st
 #else
 		// assuming linux
 		static char ThreadNameBuf[16];
-		if (pthread_getname_np(std::this_thread::get_id(), ThreadNameBuf, 16) == 0) {
+		if (pthread_getname_np(pthread_self(), ThreadNameBuf, 16) == 0) {
 			os << std::format("[{}]", ThreadNameBuf);
 		}
 		else {

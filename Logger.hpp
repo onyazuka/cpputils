@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <mutex>
 #include <memory>
+#include <thread>
 
 namespace util {
 
