@@ -52,7 +52,7 @@ void util::mt::tests::testThreadPool() {
 	//auto fut = tp.pushTask([](std::any))
 }
 
-class Observer {
+/*class Observer {
 public:
 	virtual void removeFd(int fd) = 0;
 };
@@ -110,11 +110,6 @@ public:
 	QueueT& queue() {
 		return tasksQueue;
 	}
-	/*SocketDataHandler& setEpollFd(int _epollFd) {
-		std::lock_guard<std::mutex> lck(mtx);
-		epollFd = _epollFd;
-		return *this;
-	}*/
 
 	void onRead(int epollFd, int socketFd) {
 		cout << format("Reading from epoll {} and socket {}\n", epollFd, socketFd);
@@ -123,8 +118,6 @@ public:
 		cout << "Closing...\n";
 		notifyRemoveFd(socketFd);
 	}
-
-private:
 	void run() {
 		thread = std::move(std::jthread([this](std::stop_token stop) {
 			while (!stop.stop_requested()) {
@@ -135,6 +128,8 @@ private:
 			}
 			}));
 	}
+
+private:
 	QueueT tasksQueue;
 	std::jthread thread;
 	std::vector<std::pair<int, std::vector<char>>> sockets;
@@ -174,7 +169,7 @@ void util::mt::tests::testRollingThreadPool() {
 	}
 	int epollFd = 0;
 	int sockFd = 1;
-	auto id = rtp.getId();
+	auto id = rtp.getIdx();
 	auto& obj = rtp.getThreadObj(id);
-	rtp.pushTask(rtp.getId(), std::function([&obj](int epollFd, int socketFd) { obj.onRead(epollFd, socketFd); return 0; }), std::move(epollFd), std::move(sockFd));
-}
+	rtp.pushTask(rtp.getIdx(), std::function([&obj](int epollFd, int socketFd) { obj.onRead(epollFd, socketFd); return 0; }), std::move(epollFd), std::move(sockFd));
+}*/

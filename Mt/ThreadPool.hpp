@@ -66,7 +66,7 @@ namespace util::mt {
 		template<typename Ret, typename... Args>
 		// !!!  requirement
 		std::future<std::any> pushTask(size_t threadIdx, std::function<Ret(Args...)> f, Args&&... args);
-		size_t getId();
+		size_t getIdx();
 		ThreadT& getThreadObj(size_t id);
 		inline size_t size() const { return threads.size(); }
 	private:
@@ -78,9 +78,8 @@ namespace util::mt {
 	RollingThreadPool<ThreadT>::RollingThreadPool(size_t n) {
 		threads.reserve(n);
 		for (size_t i = 0; i < n; ++i) {
-			//std::vector<std::pair<int, int>> tt;
-			//tt.emplace_back(1, 1);
 			threads.emplace_back(SafeQueue<PTaskArgsPair>());
+			threads.back().run();
 		}
 	}
 
@@ -95,7 +94,7 @@ namespace util::mt {
 	}
 
 	template<typename ThreadT>
-	size_t RollingThreadPool<ThreadT>::getId() {
+	size_t RollingThreadPool<ThreadT>::getIdx() {
 		// !! NOTE: threads.size() is not thread safe if vector's size can be changed
 		return (curThreadIdx.fetch_add(1)) % threads.size();
 	}

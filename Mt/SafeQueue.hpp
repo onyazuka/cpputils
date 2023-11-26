@@ -55,7 +55,7 @@ namespace util::mt {
 			std::lock_guard<std::mutex> lck{ mtx };
 			return que.empty();
 		}
-		bool size() const {
+		size_t size() const {
 			std::lock_guard<std::mutex> lck{ mtx };
 			return que.size();
 		}
@@ -68,6 +68,11 @@ namespace util::mt {
 		T back() const {
 			std::lock_guard<std::mutex> lck{ mtx };
 			return que.back();
+		}
+		void clear() {
+			std::lock_guard<std::mutex> lck{ mtx };
+			std::queue<T> empty;
+			std::swap(que, empty);
 		}
 	private:
 		std::queue<T> que;
