@@ -36,7 +36,7 @@ std::string util::string::v2str(std::string_view v) {
 }
 
 util::string::Splitter::SplitIterator::SplitIterator(pointer ptr, const std::string& delim, size_t _pos)
-	: sv{ ptr }, delim{ delim }, prevPos{ pos }, pos{ _pos }, count{ 0 }
+	: sv{ ptr }, delim{ delim }, prevPos{ _pos }, pos{ _pos }, count{ 0 }
 {
 	++(*this);
 }

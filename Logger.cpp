@@ -7,6 +7,10 @@
 
 using namespace util;
 
+ILogger::~ILogger() {
+	;
+}
+
 void ILogger::error(std::string_view sv, std::source_location ssrc) {
 	log(LogLevel::error, sv, ssrc);
 }

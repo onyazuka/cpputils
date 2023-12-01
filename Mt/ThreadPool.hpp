@@ -78,7 +78,7 @@ namespace util::mt {
 	RollingThreadPool<ThreadT>::RollingThreadPool(size_t n) {
 		threads.reserve(n);
 		for (size_t i = 0; i < n; ++i) {
-			threads.emplace_back(SafeQueue<PTaskArgsPair>());
+			threads.emplace_back(SafeQueue<PTaskArgsPair>(), this, i);
 			threads.back().run();
 		}
 	}

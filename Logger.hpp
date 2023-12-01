@@ -31,6 +31,7 @@ namespace util {
 			std::string timeFmt;
 		};
 
+		virtual ~ILogger();
 		virtual void log(LogLevel curLvl, std::string_view sv, std::source_location ssrc = std::source_location::current()) = 0;
 		virtual void error(std::string_view sv, std::source_location ssrc = std::source_location::current());
 		virtual void warning(std::string_view sv, std::source_location ssrc = std::source_location::current());
