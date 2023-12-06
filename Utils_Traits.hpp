@@ -15,4 +15,14 @@ namespace util::traits {
 
 	};
 
+	template<typename T>
+	struct IsTuple : std::false_type {
+
+	};
+
+	template<typename... Args>
+	struct IsTuple<std::tuple<Args...>> : std::true_type {
+
+	};
+
 }

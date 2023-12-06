@@ -96,3 +96,122 @@ util::string::Splitter::SplitIterator util::string::Splitter::begin() {
 util::string::Splitter::SplitIterator util::string::Splitter::end() {
 	return SplitIterator(sv, delim, sv.npos);
 }
+
+std::string util::string::escapeQuotes(std::string_view str) {
+    std::string res;
+    res.reserve(str.size());
+    size_t offset = 0;
+    for (size_t i = 0; i < str.size(); ++i) {
+        switch (str[i]) {
+        case '\'':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\'");
+            offset = i + 1;
+            break;
+        }
+        case '"':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\"");
+            offset = i + 1;
+            break;
+        }
+        case '\\':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\\");
+            offset = i + 1;
+            break;
+        }
+        }
+    }
+    res.append(str.substr(offset, str.npos));
+    return res;
+}
+
+std::string util::string::escapeUnsafe(std::string_view str) {
+    std::string res;
+    res.reserve(str.size());
+    size_t offset = 0;
+    for (size_t i = 0; i < str.size(); ++i) {
+        switch (str[i]) {
+        case '\0':
+        {
+            res.append(str.substr(offset, i - offset));
+            offset = i + 1;
+            break;
+        }
+        case '\b':
+        {
+            res.append(str.substr(offset, i - offset));
+            offset = i + 1;
+            break;
+        }
+        case '\n':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\n");
+            offset = i + 1;
+            break;
+        }
+        case '\r':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\r");
+            offset = i + 1;
+            break;
+        }
+        case '\t':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("    ");
+            offset = i + 1;
+            break;
+        }
+        case '\Z':
+        {
+            res.append(str.substr(offset, i - offset));
+            offset = i + 1;
+            break;
+        }
+        case '\'':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\'");
+            offset = i + 1;
+            break;
+        }
+        case '"':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\"");
+            offset = i + 1;
+            break;
+        }
+        case '\\':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\\");
+            offset = i + 1;
+            break;
+        }
+        /*case '%':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\%");
+            offset = i + 1;
+            break;
+        }
+        case '\_':
+        {
+            res.append(str.substr(offset, i - offset));
+            res.append("\\\_");
+            offset = i + 1;
+            break;
+        }*/
+        }
+    }
+    res.append(str.substr(offset, str.npos));
+    return res;
+}

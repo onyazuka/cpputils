@@ -8,6 +8,8 @@ namespace util::string
 	std::string_view strip(std::string_view v);
 	std::vector<std::string_view> split(std::string_view v, const std::string& delim);
 	std::string v2str(std::string_view v);
+	std::string escapeQuotes(std::string_view str);
+	std::string escapeUnsafe(std::string_view str);
 
 	class Splitter {
 	public:
