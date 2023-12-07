@@ -14,9 +14,11 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)crypto.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Logger.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Mt\SafeQueue.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Mt\ThreadPool.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)profiling.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\testLogger.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.hpp" />
@@ -24,8 +26,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_Traits.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)crypto.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Mt\ThreadPool.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)profiling.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\testLogger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.cpp" />
