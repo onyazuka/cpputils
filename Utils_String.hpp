@@ -11,6 +11,18 @@ namespace util::string
 	std::string escapeQuotes(std::string_view str);
 	std::string escapeUnsafe(std::string_view str);
 
+	struct StringTitlefier {
+	public:
+		StringTitlefier(const std::string& str, std::vector<char>&& predecessors = { ' ' });
+		StringTitlefier(std::string&& str, std::vector<char>&& predecessors = { ' ' });
+		char operator()(char ch);
+	private:
+		size_t offset = 0;
+		std::string s;
+		// characters that should be before current character to convert it into upper case
+		std::vector<char> predecessors;
+	};
+
 	class Splitter {
 	public:
 

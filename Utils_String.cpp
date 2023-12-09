@@ -1,8 +1,36 @@
 #include "Utils_String.hpp"
+#include <algorithm>
 
 using namespace util::string;
 
 static constexpr char Spaces[] = "\t\n\r ";
+
+StringTitlefier::StringTitlefier(const std::string& str, std::vector<char>&& _predecessors)
+    : s{ str }, predecessors{ std::move(_predecessors) }
+{
+    ;
+}
+
+StringTitlefier::StringTitlefier(std::string&& str, std::vector<char>&& _predecessors)
+    : s(std::move(str)), predecessors{ std::move(_predecessors) }
+{
+    ;
+}
+
+char StringTitlefier::operator()(char ch) {
+    size_t curOffset = offset++;
+    if (curOffset == 0) {
+        return ::toupper(ch);
+    }
+    else {
+        if (std::find(predecessors.begin(), predecessors.end(), s[curOffset - 1]) != predecessors.end()) {
+            return ::toupper(ch);
+        }
+        else {
+            return ::tolower(ch);
+        }
+    }
+}
 
 std::string_view util::string::strip(std::string_view v) {
 	auto p1 = v.find_first_not_of(Spaces);
