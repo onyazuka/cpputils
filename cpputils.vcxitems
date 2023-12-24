@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\testLogger.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils_Fs.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_String.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils_Traits.hpp" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\testLogger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestSafeQueue.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Tests\TestThreadPool.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils_Fs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utils_String.cpp" />
   </ItemGroup>
 </Project>
