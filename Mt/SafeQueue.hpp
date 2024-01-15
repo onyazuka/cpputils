@@ -7,6 +7,7 @@ namespace util::mt {
 	template<typename T>
 	class SafeQueue {
 	public:
+		using value_type = T;
 		SafeQueue() = default;
 		SafeQueue(const SafeQueue& other) = delete;
 		SafeQueue& operator=(const SafeQueue& other) = delete;
